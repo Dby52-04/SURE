@@ -22,7 +22,7 @@ huggingface-cli login
 ## 1. Build the datasets
 
 ```bash
-python build_dataset.py    # writes data/*.json
+python src/build_dataset.py    # writes data/*.json
 ```
 
 | File | Source | Safe / Unsafe |
@@ -37,7 +37,7 @@ Every sample is `{"id", "prompt", "label"}`. All sources are pinned to fixed rev
 ## 2. Build the features
 
 ```bash
-python build_features.py   # reads data/*.json, writes features/*.safetensors
+python src/build_features.py   # reads data/*.json, writes features/*.safetensors
 ```
 
 Each `features/<dataset>.safetensors` holds, for sample id `i` in row `i`:
@@ -53,7 +53,7 @@ Each `features/<dataset>.safetensors` holds, for sample id `i` in row `i`:
 ## 3. Train and evaluate
 
 ```bash
-python train.py            # seeds 42, 123, 789
+python src/train.py            # seeds 42, 123, 789
 ```
 
 For each seed the prompts are split into 80 labeled, 2000 unlabeled and 1400 validation prompts. An MLP on the hidden states is warmed up on the labeled set and then trained with SURE: confident predictions on the unlabeled pool become pseudo-labels (per-dataset, per-class adaptive thresholds), and each pseudo-label is weighted by how strongly the LLM's own verdict and uncertainty support it. The script prints, per dataset and averaged over seeds, the refusal rate on benign prompts (↓), on harmful prompts (↑), their accuracy and harmonic mean (HM).
